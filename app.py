@@ -35,7 +35,7 @@ class StyleTransfer(nn.Module):
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def image_merger(content, style,beta=10,device=device):
-    size = 300
+    size = 400
     alpha = 1
     beta *= 1000
     content = Image.fromarray(content)
@@ -74,7 +74,7 @@ def image_merger(content, style,beta=10,device=device):
         total_loss.backward(retain_graph=True)
         opt.step()
         scheduler.step()
-        if total_loss < 200 and device!='cuda':
+        if total_loss < 500 and device!='cuda':
             break
     print(total_loss.item())
     img = np.array(generated.cpu().detach().squeeze(0).permute(1,2,0)) 
