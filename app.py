@@ -35,7 +35,7 @@ class StyleTransfer(nn.Module):
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def image_merger(content, style,beta=10,device=device):
-    size = 400
+    size = 300
     alpha = 1
     beta *= 1000
     content = Image.fromarray(content)
