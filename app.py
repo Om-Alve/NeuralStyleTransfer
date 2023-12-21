@@ -35,7 +35,7 @@ class StyleTransfer(nn.Module):
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def image_merger(content, style,beta=10,device=device):
-    size = 400
+    size = 300
     alpha = 1
     beta *= 1000
     content = Image.fromarray(content)
@@ -52,7 +52,7 @@ def image_merger(content, style,beta=10,device=device):
     generator = StyleTransfer().to(device).eval()
     opt = torch.optim.Adam([generated],lr=0.06)
     scheduler = torch.optim.lr_scheduler.StepLR(opt, step_size=5, gamma=0.9)  # Learning rate scheduler
-    num_epochs = 30 if device == "cpu" else 100
+    num_epochs = 30 if device != "cuda" else 100
     style_features,_ = generator(style)
     _,content_features = generator(content)
     loop = tqdm(range(num_epochs),leave=False)
@@ -74,7 +74,7 @@ def image_merger(content, style,beta=10,device=device):
         total_loss.backward(retain_graph=True)
         opt.step()
         scheduler.step()
-        if total_loss < 200 and device=='cpu':
+        if total_loss < 200 and device!='cuda':
             break
     print(total_loss.item())
     img = np.array(generated.cpu().detach().squeeze(0).permute(1,2,0)) 
